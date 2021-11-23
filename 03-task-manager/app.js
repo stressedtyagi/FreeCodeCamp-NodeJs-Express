@@ -3,9 +3,10 @@ const app = express();
 const tasks = require("./routes/tasks");
 const connectDB = require("./db/connect");
 const notFound = require("./middleware/not-found");
+const errorHandlerMiddleware = require("./middleware/error-handler");
 require("dotenv").config();
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 /* 
     Middleware
@@ -28,6 +29,9 @@ app.use("/api/v1/tasks", tasks);
 
 /* CUSTOM 404 for API */
 app.use(notFound);
+
+/* Custom error handler middleware for asyncWrapper */
+app.use(errorHandlerMiddleware);
 
 // Setting up connection to database, and if only the connection is successful we run the server.
 // connectDB returns a promise, hence we handle it using async and await
