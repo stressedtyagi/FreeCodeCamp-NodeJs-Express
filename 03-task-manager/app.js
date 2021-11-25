@@ -35,6 +35,8 @@ app.use(errorHandlerMiddleware);
 
 // Setting up connection to database, and if only the connection is successful we run the server.
 // connectDB returns a promise, hence we handle it using async and await
+// if and only if the await gets resolved then only app.listen runs. Hence we don't need `DB connection Established` string here
+// but still we are using it here to demonstrate
 const start = async () => {
     try {
         await connectDB(process.env.MONGO_URI).then(() =>
