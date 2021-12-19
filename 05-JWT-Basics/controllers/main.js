@@ -6,7 +6,7 @@
 
         - Finally, setup authentication so only the request with JWT can access the dashboard
 */
-const CustomAPIError = require("../errors/custom-error");
+const { BadRequest } = require("../errors/custom-error");
 const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
@@ -18,7 +18,7 @@ const login = async (req, res) => {
             3. check in with controller
     */
     if (!username || !password) {
-        throw new CustomAPIError("Username or Password not found", 400);
+        throw new BadRequest("Username or Password not found");
     }
 
     // Demo Payload, ideal way is to connect to DB and send the user id as payload
@@ -35,7 +35,6 @@ const login = async (req, res) => {
 
 const dashboard = async (req, res) => {
     const user = req.user;
-    console.log(user);
     const luckyNumber = Math.floor(Math.random() * 100);
 
     res.status(200).json({
