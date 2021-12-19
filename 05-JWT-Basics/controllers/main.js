@@ -24,6 +24,7 @@ const login = async (req, res) => {
     // Demo Payload, ideal way is to connect to DB and send the user id as payload
     // so that later we can retrieve that easily
     const id = new Date().getDate();
+
     // Keep payload small, for better user experience. Bigger payload more time to decode
     const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
         expiresIn: "30d",
@@ -33,10 +34,12 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
+    const user = req.user;
+    console.log(user);
     const luckyNumber = Math.floor(Math.random() * 100);
-    console.log(req.headers);
+
     res.status(200).json({
-        msg: "Hello Sir",
+        msg: `Hello ${user.username}`,
         secret: `Here is your authorized data, lucky number ${luckyNumber}`,
     });
 };
