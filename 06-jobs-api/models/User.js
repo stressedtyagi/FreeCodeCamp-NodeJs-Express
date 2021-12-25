@@ -26,4 +26,15 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
+// Setting up middleware for mongoose, rather writing code in controlers
+// Used function keyword here so that `this` keyword will always point to our document in the DB we are inserting
+UserSchema.pre(
+    "save",
+    await function (next) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    }
+);
+
 module.exports = mongoose.model("User", UserSchema);

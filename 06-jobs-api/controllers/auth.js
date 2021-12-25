@@ -11,11 +11,14 @@ const register = async (req, res) => {
         so that we can use the middleware functionality of mongoose rather than
         writing the code here
 
-    */
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const tempUser = { name, email, password: hashedPassword };
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const tempUser = { name, email, password: hashedPassword };
+        after doing this we don't need to send tempUser while creating the new user
+        we can simple do the thing that we are doing earlier i.e. sending the req.body
+        to mongoose create function
+    */
 
     /* 
         Instead of this we will be using mongoose validator
@@ -32,7 +35,7 @@ const register = async (req, res) => {
         const user = await User.create({ ...req.body });
     */
 
-    const user = await User.create({ ...tempUser });
+    const user = await User.create({ ...req.body });
     res.status(StatusCodes.CREATED).json({ user });
 };
 const login = async (req, res) => {
