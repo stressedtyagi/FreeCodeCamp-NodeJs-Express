@@ -49,4 +49,12 @@ UserSchema.methods.createJWT = function () {
     );
 };
 
+/*  
+    Method that compares hashed password with the current password entered
+*/
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    return isMatch;
+};
+
 module.exports = mongoose.model("User", UserSchema);
