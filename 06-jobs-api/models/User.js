@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-
+const jwt = require("jsonwebtoken");
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -34,5 +34,15 @@ UserSchema.pre("save", async function (next) {
 
     // next(); <- no need to use next after mongoose 5x .. simple async/await will work
 });
+
+/*  
+    Setting up jwt functionality using `instance method` of mongoose in models, rather doing it in controllers
+    i.e attaching custom methods to our schema
+*/
+UserSchema.methods.createJWT = function () {
+    return jwt.sign({ userId: this._id, name: this.name }, "jwtSecret", {
+        expiresIn: "30d",
+    });
+};
 
 module.exports = mongoose.model("User", UserSchema);

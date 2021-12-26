@@ -1,7 +1,5 @@
 const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
-const { BadRequestError } = require("../errors");
-const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -35,13 +33,9 @@ const register = async (req, res) => {
         const user = await User.create({ ...req.body });
     */
     const user = await User.create({ ...req.body });
-    const token = jwt.sign(
-        { userId: user._id, name: user.name },
-        "jwtSecretKey",
-        {
-            expiresIn: "30d",
-        }
-    );
+
+    // Calling instance method defined in schema for User
+    const token = user.createJWT();
 
     res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
 };
