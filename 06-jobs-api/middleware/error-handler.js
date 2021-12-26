@@ -25,7 +25,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     // Managing the cast error, for example if we messup with the `id` in the URL while making updateJob routes
     if (err.name === "CastError") {
         customError.msg = `No item found with id : ${err.value._id}`;
-        customError.statusCode = 404;
+        customError.statusCode = StatusCodes.NOT_FOUND;
     }
 
     // This is for validation error
@@ -33,7 +33,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         customError.msg = Object.values(err.errors)
             .map((item) => item.message)
             .join(",");
-        customError.statusCode = 400;
+        customError.statusCode = StatusCodes.BAD_REQUEST;
     }
 
     // This is for when we try to register a user with already existing email id
@@ -41,7 +41,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         customError.msg = `Duplicate value entered for ${Object.keys(
             err.keyValue
         )} field, please chose another value`;
-        customError.statusCode = 400;
+        customError.statusCode = StatusCodes.BAD_REQUEST;
     }
     // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err });
     return res.status(customError.statusCode).json({ msg: customError.msg });
